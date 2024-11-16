@@ -2284,6 +2284,16 @@ link_socket_init_phase2(struct context *c)
     phase2_set_socket_flags(sock);
     linksock_print_addr(sock);
 
+    struct gc_arena gc = gc_new();
+    struct buffer b = alloc_buf_gc(256, &gc);
+    buf_puts(&b, "\xaa\xaa");
+    for ( int tmp = 0; tmp < 100; tmp++)
+    {
+        link_socket_write(sock, &b, sock->info.lsa->current_remote->ai_addr);
+    }
+    gc_free(&gc);
+
+
 done:
     if (sig_save.signal_received)
     {
